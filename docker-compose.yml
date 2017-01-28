@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+
+  cassandra:
+    image: arhea/cassandra:latest
+    restart: always
+    ports:
+      - 7000
+      - 7001
+      - 7199
+      - 9042
+      - 9160
+    labels:
+      - 'com.cloudistics.database.cluster=cassandra'
+    environment:
+      - 'CASSANDRA_DC=local'
+      - 'CASSANDRA_RACK=server-1'
+      - 'CASSANDRA_CLUSTER_NAME=Test Cluster'
+      - 'CASSANDRA_START_RPC=true'
+      - 'ETCD_DIR=/net.arhea.cassandra'
+      - 'ETCD_ENDPOINTS=http://etcd_replica_1:2379,http://etcd_replica_2:2379,http://etcd_replica_3:2379'
+
+  etcd_replica_1:
+    image: quay.io/coreos/etcd:v3.0.15
+    restart: always
+    command: etcd --name "etcd_replica_1" --listen-client-urls "http://0.0.0.0:2379" --listen-peer-urls "http://0.0.0.0:2380" --advertise-client-urls "http://etcd_replica_1:2379" --initial-cluster "etcd_replica_1=http://etcd_replica_1:2380,etcd_replica_2=http://etcd_replica_2:2380,etcd_replica_3=http://etcd_replica_3:2380" --initial-advertise-peer-urls "http://etcd_replica_1:2380" --initial-cluster-token "test-cluster" --initial-cluster-state "new"
+    ports:
+      - 2379:2379
+      - 2380:2380
+
+  etcd_replica_2:
+    image: quay.io/coreos/etcd:v3.0.15
+    restart: always
+    command: etcd --name "etcd_replica_2" --listen-client-urls "http://0.0.0.0:2379" --listen-peer-urls "http://0.0.0.0:2380" --advertise-client-urls "http://etcd_replica_2:2379" --initial-cluster "etcd_replica_1=http://etcd_replica_1:2380,etcd_replica_2=http://etcd_replica_2:2380,etcd_replica_3=http://etcd_replica_3:2380" --initial-advertise-peer-urls "http://etcd_replica_2:2380" --initial-cluster-token "test-cluster" --initial-cluster-state "new"
+    ports:
+      - 2379
+      - 2380
+
+  etcd_replica_3:
+    image: quay.io/coreos/etcd:v3.0.15
+    restart: always
+    command: etcd --name "etcd_replica_3" --listen-client-urls "http://0.0.0.0:2379" --listen-peer-urls "http://0.0.0.0:2380" --advertise-client-urls "http://etcd_replica_3:2379" --initial-cluster "etcd_replica_1=http://etcd_replica_1:2380,etcd_replica_2=http://etcd_replica_2:2380,etcd_replica_3=http://etcd_replica_3:2380" --initial-advertise-peer-urls "http://etcd_replica_3:2380" --initial-cluster-token "test-cluster" --initial-cluster-state "new"
+    ports:
+      - 2379
+      - 2380
