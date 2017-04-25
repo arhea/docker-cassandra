@@ -1,6 +1,6 @@
 FROM cassandra:2.1
 
-ENV ETCD_VERSION v3.1.0
+ENV ETCD_VERSION v3.1.6
 
 RUN DOWNLOAD_URL=https://github.com/coreos/etcd/releases/download \
       && apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/* \

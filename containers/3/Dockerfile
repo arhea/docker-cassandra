@@ -1,4 +1,4 @@
-FROM cassandra:3.0
+FROM cassandra:3
 
 ENV ETCD_VERSION v3.1.6
 
